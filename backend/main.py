@@ -47,7 +47,6 @@ def read_steps(user_id: str):
 
 @app.get("/insights/{user_id}")
 def generate_insights(user_id: str):
-    # --- read data ---
     conn = sqlite3.connect("steps.db")
     try:
         df = pd.read_sql_query(
@@ -64,7 +63,6 @@ def generate_insights(user_id: str):
     df["date"] = pd.to_datetime(df["date"])
     df = df.sort_values("date").reset_index(drop=True)
 
-    # --- last 7 recorded days vs previous 7 ---
     recent_week = df.tail(7)
     prev_week = df.iloc[-14:-7] if len(df) >= 14 else pd.DataFrame()
 
@@ -173,7 +171,7 @@ class StepData(BaseModel):
     steps: int
 
 
-# NEW: model for chat requests
+#model for chat requests
 class ChatMessage(BaseModel):
     user_id: str
     history: list[list[str]]  # [[user, assistant], ...]
@@ -237,12 +235,11 @@ def get_predictions(user_id: str):
     }
 
 
-# NEW: conversational chat endpoint
+#conversational chat endpoint
 @app.post("/chat")
 def chat_with_ai(payload: ChatMessage):
     user_id = payload.user_id
 
-    # --- read data for context ---
     conn = sqlite3.connect("steps.db")
     try:
         df = pd.read_sql_query(
