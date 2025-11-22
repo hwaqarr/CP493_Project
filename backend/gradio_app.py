@@ -140,7 +140,7 @@ def daily_summary(user_id: str):
     return summary
 
 
-# NEW: one step in the chat – calls /chat endpoint
+
 def chat_step(user_id: str, message: str, history):
     if not user_id:
         reply = "Please enter your user ID above before chatting."
@@ -163,7 +163,7 @@ def chat_step(user_id: str, message: str, history):
         reply = f"Error contacting AI: {e}"
 
     history = history + [[message, reply]]
-    # return empty string to clear the input box
+  
     return "", history
 
 
@@ -172,7 +172,7 @@ with gr.Blocks(title="Fitbit Steps Dashboard") as demo:
     gr.Markdown("# Fitbit Steps Dashboard")
     gr.Markdown("Easily view your step data, daily insights, and predictions.")
 
-    # Today Summary FIRST so it's the default tab
+    # Today Summary first so it's the default tab
     with gr.Tab("Today Summary"):
         user_input_summary = gr.Textbox(
             label="User ID", placeholder="Enter your user ID"
