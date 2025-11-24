@@ -1,0 +1,174 @@
+{
+  "name": "Cp493",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://api.fitbit.com/1/user/-/activities/steps/date/today/1d.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth2Api",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        560,
+        192
+      ],
+      "id": "898a70f8-74f4-4c0a-840f-e0cb2fe44fdf",
+      "name": "HTTP Request",
+      "credentials": {
+        "oAuth2Api": {
+          "id": "Pr6jMtpkWFHDm9fO",
+          "name": "FitBit OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f241952d-ebfa-41ef-9417-e75388f8e369",
+              "name": "=user_id",
+              "value": "Hashim",
+              "type": "string"
+            },
+            {
+              "id": "05b2637a-f512-4444-ab2f-89eb8e1b58a8",
+              "name": "Date",
+              "value": "={{ $json[\"activities-steps\"][0][\"dateTime\"].trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "22708389-efe0-494b-9e91-13f8d765a81d",
+              "name": "Steps",
+              "value": "={{ Math.floor(Math.random() * 20000) + 3000 }}\n",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        688,
+        -80
+      ],
+      "id": "94826034-65bc-4949-bcb2-86175a0a21cb",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/predict",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"user_id\": \"Hashim\",\n  \"date\": \"{{ new Date().toISOString().slice(0,10) }}\",\n  \"steps\": {{ Math.floor(Math.random() * 20000) + 3000 }}\n}\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        832,
+        160
+      ],
+      "id": "0e528ddb-d5c4-412e-8007-7ef14b3f2d30",
+      "name": "FastAPI"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        368,
+        0
+      ],
+      "id": "92364c81-6ad0-4b4d-951c-ccad7b61513e",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "=http://host.docker.internal:8000/insights/{{$json[\"user_id\"]}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        992,
+        -48
+      ],
+      "id": "6c5cc77f-0e7a-4647-a608-db77b857b453",
+      "name": "AI Insights"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "FastAPI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FastAPI": {
+      "main": [
+        [
+          {
+            "node": "AI Insights",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a5420cfd-c8bc-4e66-a4d2-53f7bbbff7ac",
+  "meta": {
+    "instanceId": "f2f57b64ff6a0c162f70de510430c30c4b1c67019d2ea61e1d450c2de480223a"
+  },
+  "id": "0S3Ln0KzsgLf71BK",
+  "tags": []
+}
