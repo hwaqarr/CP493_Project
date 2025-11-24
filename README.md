@@ -14,4 +14,4 @@ http://127.0.0.1:7860
 
 Token:
 setx GROQ_API_KEY "your-secret-key-here"
-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
+'need your own grok api secret keh to work'
