@@ -12,5 +12,5 @@ python gradio_app.py
 http://127.0.0.1:7860
 
 Token:
-setx HF_API_TOKEN "hf_your_new_token_here"
+setx GROQ_API_KEY "your-secret-key-here"
 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
